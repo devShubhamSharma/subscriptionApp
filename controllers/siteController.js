@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-const request = require('request-promise');
 const nonce = require('nonce')();
 dotenv.config();
 
@@ -22,7 +21,7 @@ exports.appInstall = (req, res, next) => {
                             "&state="+shopState;
         res.redirect(install_url);
     }else{
-        res.send("<h1></h1>");
+        console.log("Something went Wrong");
     }
    
 }
@@ -58,19 +57,7 @@ exports.getThemes = (req,res,next) => {
         access_token = req.body.client_shop_token;
         shop_name = req.body.client_shop_name;
         const url = "https://"+shop_name+'/admin/api/2021-07/themes.json';
-        
         AssetHelper.getshopThemes(url,access_token,shop_name);
     }
-    if(req.path === '/uninstall'){
-        access_token = req.body.client_shop_token;
-        shop_name = req.body.client_shop_name;
-        const url = "https://"+shop_name+'/admin/api/2021-07/themes.json';
-        
-        AssetHelper.getThemes(url,access_token,shop_name);
-    }
-
-    
-
-    
-    return res.end('{"success" : '+ +', "status" : 200}');
+    return res.end('{"success" : '+AssetHelper+', "status" : 200}');
 }
