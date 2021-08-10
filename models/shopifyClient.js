@@ -1,12 +1,7 @@
 const request = require('request-promise');
-const mysql = require('mysql');
+const DBConnection = require('../handlers/dbConnection');
 
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: '',
-    database: 'ShopifyClient'
-  });
+const connection = new DBConnection();
 
 module.exports = class ShopifyClient{
      getToken(accessTokenRequestUrl, accessTokenPayload){
