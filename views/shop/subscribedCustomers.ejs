@@ -1,0 +1,30 @@
+<%- include('../includes/head.ejs') %>
+</head>
+<body>
+<%- include('../includes/navigation.ejs') %>
+  <div class="container">
+    <h4>Subscribed Customers</h4>
+    <table class="table">
+      <thead class="thead">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Phone No.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let item of CustomerData){ %>
+          <tr>
+            <td><%= item.CustomerId%></td>
+            <td><%= item.FirstName%></td>
+            <td><%= item.LastName%></td>
+            <td><%= item.CustomerEmail%></td>
+            <td><%= item.CustomerPhone%></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<%- include('../includes/end.ejs') %>

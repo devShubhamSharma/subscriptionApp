@@ -1,9 +1,13 @@
 const dotenv = require('dotenv');
 const nonce = require('nonce')();
+const path = require('path');
+
+
 dotenv.config();
 
 const ShopifyClient = require('../models/shopifyClient');
 const ShopifyAssetHelper = require('../models/shopifyAssetHelper');
+
 
 const API_KEY = process.env.SHOPIFY_API_KEY;
 const API_SECRET_KEY = process.env.SHOPIFY_API_SECRET;
@@ -40,7 +44,7 @@ exports.getToken = (req,response,next) => {
     .then(res => {
         clientHelper.saveToken(res.access_token, shop);
             if(res.access_token){
-                response.render('dashboard',{
+                response.render('shop/dashboard',{
                     token : res.access_token,
                     shop_name : shop
                 });

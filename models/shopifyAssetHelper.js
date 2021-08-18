@@ -4,6 +4,7 @@ const file = require("fs");
 const ShopifyAPIHelper = require('../handlers/apiHelper');
 
 module.exports = class ShopifyAssetHelper {
+  
   getshopThemes(url, access_token, shop_name) {
     const shop_creden = {
       method: "GET",
@@ -32,15 +33,62 @@ module.exports = class ShopifyAssetHelper {
   snippetInjectionBlock(theme_id, access_token, shop_name) {
     const url ="https://" +shop_name +"/admin/api/2021-04/themes/" +theme_id +"/assets.json";
     const html = `<div class="ced_subscription--widget">
-                    <input type="radio" id="1week" name="properties[selling_plan]" value="1 week">
-                      <label for="1 week">1 Week</label><br>
+                    <label for="1week" class="ced_subscription_option">
+                      <input type="radio" id="1week" name="properties[selling_plan]" value="1 week">
+                      <span>1 Week</span>
+                    </label>
+                    <label for="2week" class="ced_subscription_option">
                     <input type="radio" id="2week" name="properties[selling_plan]" value="2 week">
-                      <label for="2 Week">2 Week</label><br>
+                      <span >2 Week</span>
+                    </label>
+                    <label for="3week" class="ced_subscription_option">
                     <input type="radio" id="3week" name="properties[selling_plan]" value="3 week">
-                      <label for="3 week">3 Week</label><br>
-                    <input type="radio" id="4week" name="properties[selling_plan]" value="4 week">
-                      <label for="4 week">4 Week</label>   
-                  </div>`;
+                      <span>3 Week</span>
+                    </label>
+                    <label for="4week" class="ced_subscription_option">
+                      <input type="radio" id="4week" name="properties[selling_plan]" value="4 week">
+                      <span>4 Week</span>  
+                    </label> 
+                  </div>
+                  <style>
+                        label.ced_subscription_option {
+                          display: flex;
+                          align-items: center;
+                          position: relative;
+                          border: 1px solid #ddd;
+                          margin-bottom: 10px;
+                          padding-left: 10px;
+                          transition: 100ms all linear;
+                        }
+                        label.ced_subscription_option:hover {
+                          background-color: rgb(218 255 219);
+                        }
+                        label.ced_subscription_option input {
+                          opacity: 0;
+                          visibility: hidden;
+                          height: 0;
+                          width: 0;
+                        }
+                        .ced_subscription_option span {
+                          display: inline-block;
+                          }
+                          label.ced_subscription_option input + span:after {
+                            content: "";
+                            position: absolute;
+                            right: 10px;
+                            height: 20px;
+                            width: 20px;
+                            background-color: rgb(20 154 20);
+                            border-radius: 50px;
+                            opacity: 0;
+                            visibility: hidden;
+                            top: 12px;
+                        }
+                        label.ced_subscription_option input:checked + span:after {
+                          opacity:1;
+                          visibility:visible;
+                        }
+                  </style>`;
     const asset_credentials = {
       method: "PUT",
       url: url,
@@ -116,16 +164,16 @@ module.exports = class ShopifyAssetHelper {
                       body: JSON.stringify({
                           "webhook": {
                             "topic": "orders/create",
-                            "address": "https://3077cadacd08.ngrok.io/orders/webhook",
+                            "address": "https://d573221ad530.ngrok.io/orders/webhook",
                             "format": "json"
                           }
                       })
                     };
-                    // request(webhook_data, (error, response) => {
-                    //   if (error) throw new Error(error);
-                    //   var api_respond = response.body;
-                    //   console.log(JSON.parse(api_respond));
-                    // });
+                    /*request(webhook_data, (error, response) => {
+                      if (error) throw new Error(error);
+                      var api_respond = response.body;
+                      console.log(JSON.parse(api_respond));
+                    });*/
                   }
                 });
               }
