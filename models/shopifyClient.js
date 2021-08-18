@@ -23,7 +23,6 @@ module.exports = class ShopifyClient{
         /*if token are alredy in db and same match from current_token*/
         connection.query('SELECT access_token, shop_name FROM subscription_client WHERE shop_name = "'+shop_credentials.shop_name+'"', (err,rows,field) => {
           if(err) throw err;
-          
           if(rows[0] != undefined)
           {
             if(shop_credentials.shop_name  === rows[0].shop_name && rows[0].access_token === shop_credentials.access_token){

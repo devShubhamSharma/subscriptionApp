@@ -1,5 +1,6 @@
 const installBtn = document.querySelector(".install_asset");
 installBtn.addEventListener('click', function(){
+    console.log("here");
     $.ajax({
         type: 'POST',
         url: '/install/assets',

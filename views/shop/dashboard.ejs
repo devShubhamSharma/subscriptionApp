@@ -1,0 +1,17 @@
+<%- include('../includes/head.ejs') %>
+<body>
+  <%- include('../includes/navigation.ejs') %>
+
+  <main>
+    <div class="mui-container">
+      <button class="mui-btn mui-btn--raised mui-btn--primary install_asset">Install</button>
+    </div>
+  </main> 
+
+    <script>
+        var shop_token = '<%-token%>';
+        var shop_name = '<%-shop_name%>';
+    </script>
+    <script src="/scripts/dashboard.js"></script>
+
+<%- include('../includes/end.ejs') %>

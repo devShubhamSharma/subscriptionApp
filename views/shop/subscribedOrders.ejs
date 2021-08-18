@@ -1,0 +1,30 @@
+<%- include('../includes/head.ejs') %>
+</head>
+<body>
+<%- include('../includes/navigation.ejs') %>
+  <div class="container">
+    <h4>Subscribed Orders</h4>
+    <table class="table">
+      <thead class="thead">
+        <tr>
+          <th scope="col">Customer</th>
+          <th scope="col">Product</th>
+          <th scope="col">Selling Plan</th>
+          <th scope="col">Product Quantity</th>
+          <th scope="col">Next Order Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let item of OrderData){ %>
+          <tr>
+            <td><%= item.CustomerId%></td>
+            <td><%= item.ProductTitle%></td>
+            <td><%= item.SellingPlan%></td>
+            <td><%= item.Quantity%></td>
+            <td><%= item.NextOrderDate%></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<%- include('../includes/end.ejs') %>
