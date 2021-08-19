@@ -7,21 +7,28 @@
     <table class="table">
       <thead class="thead">
         <tr>
+          <th scope="col">Order</th>
+          <th scope="col">Date</th>
           <th scope="col">Customer</th>
-          <th scope="col">Product</th>
+          <th scope="col">Total</th>
           <th scope="col">Selling Plan</th>
-          <th scope="col">Product Quantity</th>
-          <th scope="col">Next Order Date</th>
+          <th scope="col">Items</th>
+          <th scope="col">Next Date</th>
+          <th scope="col">Subscription Status</th>
         </tr>
       </thead>
+    
       <tbody>
         <% for (let item of OrderData){ %>
           <tr>
-            <td><%= item.CustomerId%></td>
-            <td><%= item.ProductTitle%></td>
+            <td><%= item.OrderNumber%></td>
+            <td><%= item.Date%></td>
+            <td><%= item.Customer%></td>
+            <td><%= item.Total%></td>
             <td><%= item.SellingPlan%></td>
-            <td><%= item.Quantity%></td>
-            <td><%= item.NextOrderDate%></td>
+            <td><%= item.Items%></td>
+            <td><%= item.NextDate%></td>
+            <td><%= item.Status%></td>
           </tr>
         <% } %>
       </tbody>

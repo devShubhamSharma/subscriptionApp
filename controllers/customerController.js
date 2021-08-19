@@ -1,28 +1,19 @@
 const DBConnection = require('../handlers/dbConnection');
 const connection = new DBConnection();
 
-exports.cancelSubscription = (req,res,next) => {
+exports.cancel = (req,res,next)=>{
     res.set({
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "*",
     });
-    var orderArr = [];
-    const selectQuery = 'SELECT  * FROM order_details where customer_id='+req.params.id;
-    connection.query(selectQuery, (err, rows) => {
+    var sql = 'UPDATE order_details SET subscription_status = 1 where order_id='+req.params.id;
+    var response;
+    connection.query(sql, (err, rows) => {
         if (err) {
-            res.send("No Data Found");
+            response = "No Subscription"
         } else {
-            rows.forEach((item,index) =>
-                orderArr.push({
-                    "OrderId": item.order_id, 
-                    "ProductTitle": item.Product_Title,
-                    "SellingPlan": item.selling_plan,
-                    "Quantity": item.quantity,
-                    "NextOrderDate": item.next_order_date
-                })
-
-            );
+            response = "Subscription Canceled"
         }
-        return res.json(orderArr);
+        return res.json(response);
     });
 }

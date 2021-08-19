@@ -32,38 +32,48 @@ module.exports = class ShopifyWebhookHelper {
 
     getOrderData(webhook_response){
         var data = JSON.parse(webhook_response);
+        console.log(data);
         const order_array = [];
+        //selling plam in days and status 1 denote subscription acive 0 denotes subscription inactive
         data.line_items.forEach(line_item =>{
             line_item.properties.forEach(prop => {
-
                 var order_date = data.created_at;
                 var date = new Date(order_date);
                 var next_date;
+                var weekDays;
                 switch(prop.value){
                     case '1 week':
                         next_date = this.setDateFormat(date,7);
+                        weekDays = 7;
                         break;
                     case '2 week':
                         next_date = this.setDateFormat(date,14);
+                        weekDays = 14;
                         break;
                     case '3 week':
                         next_date = this.setDateFormat(date,21);
+                        weekDays = 21;
                         break;
                     case '4 week':
                         next_date = this.setDateFormat(date,28);
+                        weekDays = 28;
                         break;
                 }
                 order_array.push({
+                    "order_number": data.name,
+                    "total_price" : data.current_total_price,
+                    "fullname":data.billing_address.name,
                     "customer_id" : data.customer.id,
                     "order_id": data.id,
                     "line_items_id": line_item.id,
                     "product_title" : line_item.name,
                     "variant_title": line_item.variant_title,
-                    "selling_plan": prop.value,
+                    "selling_plan": weekDays,
                     "order_created": data.created_at,
                     "next_order_date": next_date,
                     "variant_id": line_item.variant_id,
-                    "quantity": line_item.quantity
+                    "quantity": line_item.quantity,
+                    "status" : 1
             });
             });
         });
@@ -82,8 +92,12 @@ module.exports = class ShopifyWebhookHelper {
         order_array.forEach(item => {
             if(item.customer_id && item.order_id){
                 const selectQuery = 'SELECT * FROM order_details WHERE line_items_id ='+item.line_items_id + 'AND customer_id =' +item.customer_id;
-                const query = `INSERT INTO order_details (order_id,customer_id,line_items_id,product_title,variant_title,	selling_plan,order_created,next_order_date,	variant_id,quantity) VALUES (?);`;
-                let values = [item.order_id,item.customer_id, item.line_items_id,item.product_title, item.variant_title,item.selling_plan,item.order_created,item.next_order_date,item.variant_id,item.quantity];
+                const query = `INSERT INTO order_details (order_number,order_id,customer_fullname,customer_id,
+                                line_items_id,product_title,variant_title,selling_plan,order_created,next_order_date,	
+                                variant_id,quantity,total_price,subscription_status) VALUES (?);`;
+                let values = [item.order_number,item.order_id,item.fullname, item.customer_id, item.line_items_id,item.product_title, 
+                                item.variant_title,item.selling_plan,item.order_created,item.next_order_date,item.variant_id,
+                                item.quantity,item.total_price,item.status];
                 connection.query(selectQuery, (err, rows) => {
                     if (typeof rows == 'undefined') {
                         connection.query(query, [values], (err, rows) => {
