@@ -2,36 +2,54 @@
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
+<main>
   <div class="container">
-    <h4>Subscribed Orders</h4>
-    <table class="table">
-      <thead class="thead">
-        <tr>
-          <th scope="col">Order</th>
-          <th scope="col">Date</th>
-          <th scope="col">Customer</th>
-          <th scope="col">Total</th>
-          <th scope="col">Selling Plan</th>
-          <th scope="col">Items</th>
-          <th scope="col">Next Date</th>
-          <th scope="col">Subscription Status</th>
-        </tr>
-      </thead>
-    
-      <tbody>
-        <% for (let item of OrderData){ %>
-          <tr>
-            <td><%= item.OrderNumber%></td>
-            <td><%= item.Date%></td>
-            <td><%= item.Customer%></td>
-            <td><%= item.Total%></td>
-            <td><%= item.SellingPlan%></td>
-            <td><%= item.Items%></td>
-            <td><%= item.NextDate%></td>
-            <td><%= item.Status%></td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <div class="card">
+      <div class="card-header">
+        <h4>Subscribed Orders</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-hover">
+          <thead class="thead">
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Date</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Total</th>
+              <th scope="col">Selling Plan</th>
+              <th scope="col">Items</th>
+              <th scope="col">Next Date</th>
+              <th scope="col">Subscription Status</th>
+            </tr>
+          </thead>
+        
+          <tbody class="text-secondary">
+            <% for (let item of OrderData){ %>
+              <tr>
+                <td><%= item.OrderNumber%></td>
+                <td><%= item.Date%></td>
+                <td><%= item.Customer%></td>
+                <td><%= item.Total%></td>
+                <td><%= item.SellingPlan%></td>
+                <td><%= item.Items%></td>
+                <td><%= item.NextDate%></td>
+                <td><span class="badge badge-success"><%= item.Status%></span></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer">
+        <ul class="pagination justify-content-center m-0">
+          <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item active"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+      </div>
+    </div>
+
   </div>
+</main>
 <%- include('../includes/end.ejs') %>
