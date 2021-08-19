@@ -164,7 +164,7 @@ module.exports = class ShopifyAssetHelper {
                       body: JSON.stringify({
                           "webhook": {
                             "topic": "orders/create",
-                            "address": "https://b2ce8f2b8cf5.ngrok.io/orders/webhook",
+                            "address": "https://b6127c34ae72.ngrok.io/orders/webhook",
                             "format": "json"
                           }
                       })
