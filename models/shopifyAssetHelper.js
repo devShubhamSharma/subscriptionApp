@@ -169,11 +169,11 @@ module.exports = class ShopifyAssetHelper {
                           }
                       })
                     };
-                    /*request(webhook_data, (error, response) => {
+                    request(webhook_data, (error, response) => {
                       if (error) throw new Error(error);
                       var api_respond = response.body;
                       console.log(JSON.parse(api_respond));
-                    });*/
+                    });
                   }
                 });
               }
