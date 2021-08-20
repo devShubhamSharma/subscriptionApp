@@ -1,4 +1,5 @@
 <%- include('../includes/head.ejs') %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
@@ -23,33 +24,63 @@
             </tr>
           </thead>
         
-          <tbody class="text-secondary">
+          <tbody class="text-secondary" data-next="<%=OrderData[Object.keys(OrderData)[Object.keys(OrderData).length - 1]].id%>">
+            
             <% for (let item of OrderData){ %>
               <tr>
-                <td><%= item.OrderNumber%></td>
-                <td><%= item.Date%></td>
-                <td><%= item.Customer%></td>
-                <td><%= item.Total%></td>
-                <td><%= item.SellingPlan%></td>
-                <td><%= item.Items%></td>
-                <td><%= item.NextDate%></td>
-                <td><span class="badge badge-success"><%= item.Status%></span></td>
+                <td><%= item.OrderNumber %></td>
+                <td><%= item.Date %></td>
+                <td><%= item.Customer %></td>
+                <td><%= item.Total %></td>
+                <td><%= item.SellingPlan %></td>
+                <td><%= item.Items %></td>
+                <td><%= item.NextDate %></td>
+                <td><span class="badge badge-success"><%= item.Status %></span></td>
               </tr>
             <% } %>
+
           </tbody>
         </table>
       </div>
       <div class="card-footer">
-        <ul class="pagination justify-content-center m-0">
-          <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item active"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        <ul class="pagination justify-content-center m-0 cedCustomPage">
+          <li class="page-item disabled"><a class="page-link prev-pagination">Previous</a></li>
+          <li class="page-item"><a class="page-link next-pagination">Next</a></li>
         </ul>
       </div>
     </div>
-
   </div>
+  <script>
+    $(".next-pagination").on("click", function(){
+    var limit = $("tbody").data('next');
+    $.ajax({
+        type: 'GET',
+        url: '/subscribed/orders?nextdata='+limit,
+        success: function(response) {
+            var parser = new DOMParser();
+            var body_html = response;
+          	var doc = parser.parseFromString(body_html, 'text/html');
+            var table_body = doc.querySelector('tbody');
+            $("tbody").replaceWith(table_body);
+        }
+    });
+  });
+
+  // $(".prev-pagination").on("click", function(){
+  //   var limit = $("tbody").data('prev');
+  //   console.log(limit);
+  //   $.ajax({
+  //       type: 'GET',
+  //       url: '/subscribed/orders?limit='+limit,
+  //       success: function(response) {
+  //           var parser = new DOMParser();
+  //           var body_html = response;
+  //         	var doc = parser.parseFromString(body_html, 'text/html');
+  //           var table_body = doc.querySelector('tbody');
+  //           $("tbody").replaceWith(table_body);
+  //       }
+  //   });
+  // });
+  </script>
 </main>
 <%- include('../includes/end.ejs') %>

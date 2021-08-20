@@ -63,5 +63,5 @@ exports.getThemes = (req,res,next) => {
         const url = "https://"+shop_name+'/admin/api/2021-07/themes.json';
         AssetHelper.getshopThemes(url,access_token,shop_name);
     }
-    return res.end('{"success" : '+AssetHelper+', "status" : 200}');
+    return res.json({"success" : AssetHelper, "status" : 200});
 }
