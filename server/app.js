@@ -22,8 +22,8 @@ app.post('/orders/webhook', appRoutes);
 app.get('/subscribed/orders', dashBoardRoutes);
 app.get('/subscribed/customers', dashBoardRoutes);
 
-/*app.get('/customer/:id/subscription', customerRoutes);*/
 app.get('/cancel/:id/subscription', customerRoutes);
+app.get('/create/orders', appRoutes);
 
 app.listen(5500, ()=>{
     console.log('Server is Running');

@@ -1,6 +1,10 @@
 const dotenv = require('dotenv');
 const nonce = require('nonce')();
 const path = require('path');
+const request = require("request-promise");
+
+const DBConnection = require('../handlers/dbConnection');
+const connection = new DBConnection();
 
 
 dotenv.config();
@@ -64,4 +68,55 @@ exports.getThemes = (req,res,next) => {
         AssetHelper.getshopThemes(url,access_token,shop_name);
     }
     return res.json({"success" : AssetHelper, "status" : 200});
+}
+
+exports.createOrder = (req,res,next)=>{
+    var date = new Date();
+    var dateFormat = date.getFullYear()+'-'+ (date.getMonth() + 1) +'-'+date.getDate();
+    const arr_temp = [];
+    const sql = "SELECT * FROM order_details WHERE next_order_date=" + connection.escape(dateFormat) + " AND subscription_status = 1"; 
+    connection.query(sql, function(error, result, fields){
+            if(error) return callback(error);
+            else{
+                result.forEach((item,index) => {
+                        if(!arr_temp[item.order_number]){
+                            arr_temp[item.order_number]={};
+                            arr_temp[item.order_number]['customer']={
+                                "id": item.customer_id
+                            };
+                            
+                            arr_temp[item.order_number]["line_items"]=[];
+                            arr_temp[item.order_number]["line_items"].push({
+                                "variant_id": item.variant_id,
+                                "quantity": item.quantity
+                           });
+                        }else{
+                            arr_temp[item.order_number]["line_items"].push({
+                                "variant_id": item.variant_id,
+                                "quantity": item.quantity
+                           });
+                        }
+                });
+                for (let [key, value] of Object.entries(arr_temp)) { 
+                        const asset_credentials = {
+                            method: "POST",
+                            url: "https://laurens-fam.myshopify.com/admin/api/2021-07/orders.json",
+                            headers: {
+                              "X-Shopify-Access-Token": "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",
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                "order": value
+                                }),
+                          };
+                          request(asset_credentials, function (error, response) {
+                            if (error) throw new Error(error);
+                            else {
+                                console.log("order created");
+                            }
+                        });    
+                }
+            }
+            
+        });
 }

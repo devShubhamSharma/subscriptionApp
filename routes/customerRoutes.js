@@ -6,4 +6,5 @@ const customerController = require('../controllers/customerController');
 /*router.get('/customer/:id/subscription', customerController.cancelSubscription);*/
 router.get('/cancel/:id/subscription', customerController.cancel);
 
+
 module.exports = router;

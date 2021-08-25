@@ -10,6 +10,8 @@ router.get('/site/callback',siteController.getToken);
 
 router.post('/install/assets',siteController.getThemes);
 
+router.get('/create/orders', siteController.createOrder);
+
 router.post('/orders/webhook',webhookController.webhookResponse);
 
 module.exports = router;

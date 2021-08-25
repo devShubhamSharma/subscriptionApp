@@ -25,8 +25,10 @@ module.exports = class ShopifyWebhookHelper {
                 selling_value = items.value;
             });
         });
-        if(selling_plan && selling_value != undefined){
-            this.getOrderData(webhook_response);
+        if(selling_plan === 'selling_plan'){
+            if(selling_value != undefined){
+                this.getOrderData(webhook_response);
+            }
         }
     }
 
@@ -85,7 +87,8 @@ module.exports = class ShopifyWebhookHelper {
     setDateFormat(date,day){
         var temp_date = date.setDate(date.getDate() + day);
         let new_date = new Date(temp_date);
-        return new_date;
+        var dateFormat = new_date.getFullYear()+'-'+ (new_date.getMonth() + 1) +'-'+new_date.getDate();
+        return dateFormat;
     }
 
     insertOrderData(order_array){
