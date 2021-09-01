@@ -1,5 +1,9 @@
 const request = require("request-promise");
 const file = require("fs");
+const dotenv = require('dotenv');
+dotenv.config();
+
+const HOST_NAME = process.env.HOST;
 
 const ShopifyAPIHelper = require('../handlers/apiHelper');
 
@@ -164,16 +168,16 @@ module.exports = class ShopifyAssetHelper {
                       body: JSON.stringify({
                           "webhook": {
                             "topic": "orders/create",
-                            "address": "https://e5b7-2409-4063-4d19-591c-bd88-210f-d8ff-12c5.ngrok.io/orders/webhook",
+                            "address": HOST_NAME+"/orders/webhook",
                             "format": "json"
                           }
                       })
                     };
-                    // request(webhook_data, (error, response) => {
-                    //   if (error) throw new Error(error);
-                    //   var api_respond = response.body;
-                    //   console.log(JSON.parse(api_respond));
-                    // });
+                    request(webhook_data, (error, response) => {
+                      if (error) throw new Error(error);
+                      var api_respond = response.body;
+                      console.log(JSON.parse(api_respond));
+                    });
                   }
                 });
               }
