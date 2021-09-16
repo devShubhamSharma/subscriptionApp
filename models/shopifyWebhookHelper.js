@@ -43,22 +43,27 @@ module.exports = class ShopifyWebhookHelper {
                 var date = new Date(order_date);
                 var next_date;
                 var weekDays;
+                var countSubscripton;
                 switch(prop.value){
                     case '1 week':
                         next_date = this.setDateFormat(date,7);
                         weekDays = 7;
+                        countSubscripton = weekDays/7;
                         break;
                     case '2 week':
                         next_date = this.setDateFormat(date,14);
                         weekDays = 14;
+                        countSubscripton = weekDays/7;
                         break;
                     case '3 week':
                         next_date = this.setDateFormat(date,21);
                         weekDays = 21;
+                        countSubscripton = weekDays/7;
                         break;
                     case '4 week':
                         next_date = this.setDateFormat(date,28);
                         weekDays = 28;
+                        countSubscripton = weekDays/7;
                         break;
                 }
                 order_array.push({
@@ -75,7 +80,8 @@ module.exports = class ShopifyWebhookHelper {
                     "next_order_date": next_date,
                     "variant_id": line_item.variant_id,
                     "quantity": line_item.quantity,
-                    "status" : 1
+                    "status" : 1,
+                    "count_subscription_order" : countSubscripton
             });
             });
         });
@@ -97,10 +103,10 @@ module.exports = class ShopifyWebhookHelper {
                 const selectQuery = 'SELECT * FROM order_details WHERE line_items_id ='+item.line_items_id + 'AND customer_id =' +item.customer_id;
                 const query = `INSERT INTO order_details (order_number,order_id,customer_fullname,customer_id,
                                 line_items_id,product_title,variant_title,selling_plan,order_created,next_order_date,	
-                                variant_id,quantity,total_price,subscription_status) VALUES (?);`;
+                                variant_id,quantity,total_price,subscription_status,subscribed_orders_count) VALUES (?);`;
                 let values = [item.order_number,item.order_id,item.fullname, item.customer_id, item.line_items_id,item.product_title, 
                                 item.variant_title,item.selling_plan,item.order_created,item.next_order_date,item.variant_id,
-                                item.quantity,item.total_price,item.status];
+                                item.quantity,item.total_price,item.status,item.count_subscription_order];
                 connection.query(selectQuery, (err, rows) => {
                     if (typeof rows == 'undefined') {
                         connection.query(query, [values], (err, rows) => {

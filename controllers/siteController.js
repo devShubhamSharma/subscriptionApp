@@ -1,23 +1,19 @@
 const dotenv = require('dotenv');
 const nonce = require('nonce')();
-const path = require('path');
 const request = require("request-promise");
 
 const DBConnection = require('../handlers/dbConnection');
 const connection = new DBConnection();
-
 
 dotenv.config();
 
 const ShopifyClient = require('../models/shopifyClient');
 const ShopifyAssetHelper = require('../models/shopifyAssetHelper');
 
-
 const API_KEY = process.env.SHOPIFY_API_KEY;
 const API_SECRET_KEY = process.env.SHOPIFY_API_SECRET;
 const SCOPES = process.env.SCOPES.split(",");
 const HOST_NAME = process.env.HOST;
-
 /*controller action for install the app on the client store*/
 exports.appInstall = (req, res, next) => {
     const shop_name = req.query.shop;
@@ -31,9 +27,7 @@ exports.appInstall = (req, res, next) => {
     }else{
         console.log("Something went Wrong");
     }
-   
 }
-
 exports.getToken = (req,response,next) => {
     const {shop, code} = req.query;
     const accessTokenRequestUrl = 'https://'+shop+'/admin/oauth/access_token';
@@ -54,7 +48,6 @@ exports.getToken = (req,response,next) => {
                 });
             }
     });
-
 }
 
 exports.getThemes = (req,res,next) => {
@@ -84,7 +77,6 @@ exports.createOrder = (req,res,next)=>{
                             arr_temp[item.order_number]['customer']={
                                 "id": item.customer_id
                             };
-                            
                             arr_temp[item.order_number]["line_items"]=[];
                             arr_temp[item.order_number]["line_items"].push({
                                 "variant_id": item.variant_id,
@@ -97,26 +89,25 @@ exports.createOrder = (req,res,next)=>{
                            });
                         }
                 });
-                for (let [key, value] of Object.entries(arr_temp)) { 
-                        const asset_credentials = {
-                            method: "POST",
-                            url: "https://laurens-fam.myshopify.com/admin/api/2021-07/orders.json",
-                            headers: {
-                              "X-Shopify-Access-Token": "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",
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                "order": value
-                                }),
-                          };
-                          request(asset_credentials, function (error, response) {
-                            if (error) throw new Error(error);
-                            else {
-                                console.log("order created");
-                            }
-                        });    
-                }
+                // for (let [key, value] of Object.entries(arr_temp)) { 
+                //         const asset_credentials = {
+                //             method: "POST",
+                //             url: "https://laurens-fam.myshopify.com/admin/api/2021-07/orders.json",
+                //             headers: {
+                //               "X-Shopify-Access-Token": "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",
+                //               "Content-Type": "application/json",
+                //             },
+                //             body: JSON.stringify({
+                //                 "order": value
+                //             }),
+                //           };
+                //           request(asset_credentials, function (error, response) {
+                //             if (error) throw new Error(error);
+                //             else {
+                //                 console.log("order created");
+                //             }
+                //     });    
+                // }
             }
-            
-        });
+    });
 }

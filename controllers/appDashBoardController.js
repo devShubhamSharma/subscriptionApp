@@ -21,6 +21,7 @@ exports.subscribedOrders = (req, res, next) => {
         if (err) {
             throw err;
         } else {
+            if(rows.length != 0){
             rows.forEach((item) =>{
             var weekDays;        
             switch(item.selling_plan){
@@ -51,16 +52,19 @@ exports.subscribedOrders = (req, res, next) => {
                     "SellingPlan": weekDays,
                     "Items": item.quantity,
                     "NextDate" : next_date,
-                    "Status": subscription_status
-
-                })
+                    "Status": subscription_status,
+                });
             });
-            //var arr_length = orderArr.length;
             pageCount = Math.ceil((totalCount[0].id_count)/limit);
+        }else{
+            orderArr = "No Subscription Found";
+        }
+            //var arr_length = orderArr.length;
         }
         res.render('shop/subscribedOrders',{
             OrderData : orderArr,
             pageCount:pageCount
+            
         });
     });
 };

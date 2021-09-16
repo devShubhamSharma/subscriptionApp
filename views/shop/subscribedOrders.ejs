@@ -9,6 +9,7 @@
       <div class="card-header">
         <h4>Subscribed Orders</h4>
       </div>
+      <% if(OrderData != 'No Subscription Found') { %>
       <div class="card-body">
         <table class="table table-hover">
           <thead class="thead">
@@ -25,7 +26,6 @@
           </thead>
         
           <tbody class="text-secondary" data-next="<%=OrderData[Object.keys(OrderData)[Object.keys(OrderData).length - 1]].id%>">
-            
             <% for (let item of OrderData){ %>
               <tr>
                 <td><%= item.OrderNumber %></td>
@@ -41,6 +41,7 @@
 
           </tbody>
         </table>
+        
       </div>
       <div class="card-footer">
         <ul class="pagination justify-content-center m-0 cedCustomPage">
@@ -48,11 +49,19 @@
           <li class="page-item"><a class="page-link next-pagination">Next</a></li>
         </ul>
       </div>
+      <% } else { %>
+        <div class="container">
+            <div class="card-body">
+              <p class="text-info mb-4">No Subscrition Order Found</h4>
+            </div>
+        </div>
+      <% } %>   
     </div>
   </div>
   <script>
     $(".next-pagination").on("click", function(){
     var limit = $("tbody").data('next');
+    
     $.ajax({
         type: 'GET',
         url: '/subscribed/orders?nextdata='+limit,

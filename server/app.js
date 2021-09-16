@@ -14,7 +14,7 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/site', appRoutes)
+app.get('/site', appRoutes);
 app.get('/site/callback', appRoutes);
 app.post('/install/assets', appRoutes);
 app.post('/orders/webhook', appRoutes);
@@ -28,5 +28,3 @@ app.get('/create/orders', appRoutes);
 app.listen(5500, ()=>{
     console.log('Server is Running');
 });
-
-
