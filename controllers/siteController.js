@@ -122,7 +122,7 @@ exports.getToken = (req, response, next) => {
                     break;
                 }
                 var subscription_status =
-                  item.subscription_status == 1 ? "Active" : "Inactive";
+                item.subscription_status == 1 ? "Active" : "Inactive";
                 let temp_date = new Date(item.order_created);
                 let order_date = temp_date.toString().split("GMT")[0];
                 let temp_next_date = new Date(item.next_order_date);
@@ -156,5 +156,4 @@ exports.getToken = (req, response, next) => {
 exports.createOrder = (req, res, next) => {  
   const createShopifyOrders = new ShopifyOrders();
   createShopifyOrders.createOrders();
-  return true;  
 }
