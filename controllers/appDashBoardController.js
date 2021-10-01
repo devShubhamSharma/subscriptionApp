@@ -77,15 +77,20 @@ exports.subscribedCustomers = (req, res, next) => {
         if (err) {
             throw err;
         } else {
+            if(rows.length != 0){
             rows.forEach((item) =>
-            customerArr.push({
-                    "CustomerId": item.customer_id,
-                    "FirstName": item.first_name,
-                    "LastName": item.last_name, 
-                    "CustomerEmail": item.customer_email,
-                    "CustomerPhone": item.customer_phone
-                })
-            );
+                customerArr.push({
+                        "CustomerId": item.customer_id,
+                        "FirstName": item.first_name,
+                        "LastName": item.last_name, 
+                        "CustomerEmail": item.customer_email,
+                        "CustomerPhone": item.customer_phone
+                    })
+                );
+            }
+            else{
+                customerArr = "No Customer Found";
+            }
         }
         res.render('shop/subscribedCustomers',{
             CustomerData : customerArr

@@ -8,6 +8,13 @@ const HOST_NAME = process.env.HOST;
 const ShopifyAPIHelper = require('../handlers/apiHelper');
 
 module.exports = class ShopifyAssetHelper {
+
+  getShopvariable(shop_name, access_token){
+    return {
+      shop : shop_name,
+      token : access_token
+    }
+  }
   
   getshopThemes(url, access_token, shop_name) {
     const shop_creden = {

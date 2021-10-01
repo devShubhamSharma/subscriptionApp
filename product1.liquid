@@ -136,8 +136,8 @@
 
         <h1 class="product-single__title">{{ product.title }}</h1>
         <script>window.performance.mark('debut:product:title_visible');</script>
-          
-        <div class="product__price">
+
+          <div class="product__price">
             {% include 'product-price', variant: current_variant, show_vendor: section.settings.show_vendor %}
           </div>
 
@@ -211,7 +211,7 @@
               {% include 'icon-error' %}
               <span class="product-form__error-message" data-error-message>{{ 'products.product.quantity_minimum_message' | t }}</span>
             </div>
-
+            {%render 'test-api'%}
             <div class="product-form__controls-group product-form__controls-group--submit">
               <div class="product-form__item product-form__item--submit
                 {%- if section.settings.enable_payment_button %} product-form__item--payment-button {%- endif -%}
