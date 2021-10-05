@@ -16,7 +16,6 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/site', appRoutes);
 app.get('/site/callback', appRoutes);
-app.post('/install/assets', appRoutes);
 app.post('/orders/webhook', appRoutes);
 
 app.get('/subscribed/orders', dashBoardRoutes);

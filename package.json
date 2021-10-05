@@ -10,7 +10,6 @@
   "author": "cedcommerce",
   "license": "ISC",
   "dependencies": {
-    "@shopify/shopify-api": "^1.4.1",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",

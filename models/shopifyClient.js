@@ -49,4 +49,29 @@ module.exports = class ShopifyClient{
         });
       });
     }
+
+    getSubscribedOrders(){
+      switch (item.selling_plan){
+          case "7":
+          let date = new Date();
+          next_order_date   = setDateFormat(date,14);
+          update_query = `UPDATE order_details SET subscribed_orders_count = "${item.subscribed_orders_count-1}", next_order_date = "${next_order_date}" WHERE order_number="${item.order_number}"`;
+          break;
+          case "14":
+          let date1 = new Date();
+          next_order_date   = setDateFormat(date1,14);
+          update_query = `UPDATE order_details SET subscribed_orders_count = "${item.subscribed_orders_count-1}", next_order_date = "${next_order_date}" WHERE order_number="${item.order_number}"`;
+          break;
+          case "21":
+          let date2 = new Date();
+          next_order_date   = setDateFormat(date2,21);
+          update_query = `UPDATE order_details SET subscribed_orders_count = "${item.subscribed_orders_count-1}", next_order_date = "${next_order_date}" WHERE order_number="${item.order_number}"`;
+          break;
+          case "28":
+          let date3 = new Date();
+          next_order_date   = setDateFormat(date3,28);
+          update_query = `UPDATE order_details SET subscribed_orders_count = "${item.subscribed_orders_count-1}", next_order_date = "${next_order_date}" WHERE order_number="${item.order_number}"`;
+          break;
+      }
+    }
 }
