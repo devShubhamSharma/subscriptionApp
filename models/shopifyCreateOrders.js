@@ -73,46 +73,48 @@ function prepareUpdateQuery(update_query,arr_temp){
     }
 }
 
-
-var createOrders = async function(callback) { 
+var createOrders = function() {
+    var response; 
     var date = new Date();
     var dateFormat = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
     const arr_temp = [];
     var sql = "SELECT * FROM order_details WHERE next_order_date="+connection.escape(dateFormat)+"AND subscription_status = 1 AND subscribed_orders_count >= 1";    
     
-    await connection.query(sql, function (error, result) {
-        if (error) {
-            return err;
-        }
-        else {
-        result.forEach((item, index) => {
-            if (!arr_temp[item.order_number]) {
-                var updateQuery = prepareNextOrderDate(item);
-
-                arr_temp[item.order_number] = {};
-                arr_temp[item.order_number]["customer"] = {
-                    id: item.customer_id,
-                };
-                arr_temp[item.order_number]["line_items"] = [];
-                arr_temp[item.order_number]["line_items"].push({
-                    variant_id: item.variant_id,
-                    quantity: item.quantity,
-                });
-                 callback = prepareUpdateQuery(updateQuery,arr_temp);
-            } 
+    return new Promise(function(resolve,reject){
+        connection.query(sql, function (error, result) {
+            if (error) {
+                return err;
+            }
             else {
-                var updateQuery = prepareNextOrderDate(item);
-                arr_temp[item.order_number]["line_items"].push({
-                    variant_id: item.variant_id,
-                    quantity: item.quantity,
-                });
-                callback = prepareUpdateQuery(updateQuery,arr_temp);
+            result.forEach((item, index) => {
+                if (!arr_temp[item.order_number]) {
+                    var updateQuery = prepareNextOrderDate(item);
+    
+                    arr_temp[item.order_number] = {};
+                    arr_temp[item.order_number]["customer"] = {
+                        id: item.customer_id,
+                    };
+                    arr_temp[item.order_number]["line_items"] = [];
+                    arr_temp[item.order_number]["line_items"].push({
+                        variant_id: item.variant_id,
+                        quantity: item.quantity,
+                    });
+                     response = prepareUpdateQuery(updateQuery,arr_temp);
+                } 
+                else {
+                    var updateQuery = prepareNextOrderDate(item);
+                    arr_temp[item.order_number]["line_items"].push({
+                        variant_id: item.variant_id,
+                        quantity: item.quantity,
+                    });
+                    response = prepareUpdateQuery(updateQuery,arr_temp);
+                }
+            });
+            resolve(response);
             }
         });
-        }
     });
 } 
-
 module.exports = {
     CreateSubscibedOrders : createOrders
 }

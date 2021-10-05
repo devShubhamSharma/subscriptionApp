@@ -153,9 +153,13 @@ exports.getToken = (req, response) => {
   });
 };
 
-exports.createOrder = async (req, res, next) => {  
-  await ShopifyOrders.CreateSubscibedOrders()
+exports.createOrder = (req, res, next) => {  
+  ShopifyOrders.CreateSubscibedOrders()
   .then(response => {
-    console.log(response);
+    if(response!=''){
+      res.send("Order successfully created");
+    }else{
+      res.send("Something went wrong");
+    }
   });
 }
