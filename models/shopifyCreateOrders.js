@@ -50,9 +50,9 @@ function prepareUpdateQuery(update_query,arr_temp){
         }
         var asset_credentials = {
         method: "POST",
-        url: "https://marvalmix.myshopify.com/admin/api/2021-07/orders.json",
+        url: localStorage.getItem('Shop_Name'),
         headers: {
-            "X-Shopify-Access-Token": "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",
+            "X-Shopify-Access-Token": localStorage.getItem('Shop_Token'),
             "Content-Type": "application/json",
         },
         body: JSON.stringify({

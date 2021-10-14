@@ -127,7 +127,6 @@ module.exports = class ShopifyWebhookHelper {
     }
 
     prepareCustomerArray(webhook_response){
-        console.log(webhook_response);
         var data = JSON.parse(webhook_response);
         const customer_array = [];
         
@@ -138,7 +137,6 @@ module.exports = class ShopifyWebhookHelper {
             'last_name' : data.customer.last_name,
             'customer_phone' : data.customer.phone
         });
-        console.log(customer_array);
         this.saveCustomerData(customer_array);
     }
 

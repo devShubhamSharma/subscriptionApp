@@ -11,6 +11,6 @@ exports.webhookResponse = async (req, res, next) => {
         webhookHelper.getWebhookResponse(jsonObj);
         return res.end('{"success"}');
     }catch (err) {
-        console.error(err);
+        return res.end('{"error"}');
     }
 }

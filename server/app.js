@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser =  require('body-parser');
 
 const app = express();
+
 const appRoutes = require('../routes/appRoutes');
 const dashBoardRoutes = require('../routes/dashBoardRoutes');
 const customerRoutes = require('../routes/customerRoutes');
@@ -24,6 +25,6 @@ app.get('/subscribed/customers', dashBoardRoutes);
 app.get('/cancel/:id/subscription', customerRoutes);
 app.get('/create/orders', appRoutes);
 
-app.listen(3000, ()=>{
+app.listen(5500, ()=>{
     console.log('Server is Running');
 });

@@ -1,6 +1,10 @@
 const dotenv = require("dotenv");
 const nonce = require("nonce")();
 const request = require("request-promise");
+var express = require('express');
+const localStorage = require('localStorage');
+
+var app = express();
 
 const DBConnection = require("../handlers/dbConnection");
 const connection = new DBConnection();
@@ -17,17 +21,18 @@ const SCOPES = process.env.SCOPES.split(",");
 const HOST_NAME = process.env.HOST;
 
 /*controller action for install the app on the client store*/
-exports.appInstall = (req, res, next) => {
+exports.appInstall = (req, res) => {
   const shop_name = req.query.shop;
   const shopState = nonce();
   if (shop_name) {
     const install_url = "https://" + shop_name + "/admin/oauth/authorize?client_id=" + API_KEY + "&scope=" + SCOPES + "&redirect_uri=" + HOST_NAME + "/site/callback" + "&state=" + shopState;
     res.redirect(install_url);
   }else {
-    
+     console.log("Something went wrong");
   }
 };
 
+/* function for getting shop token*/
 exports.getToken = (req, response) => {
   const { shop, code } = req.query;
   const accessTokenRequestUrl = "https://" + shop + "/admin/oauth/access_token";
@@ -41,10 +46,13 @@ exports.getToken = (req, response) => {
   clientHelper
   .getToken(accessTokenRequestUrl, accessTokenPayload)
   .then((res) => {
+
     clientHelper.saveToken(res.access_token, shop);
     if (res.access_token) {
+      // saving shop_access_token and shop_name in the local storage
+      localStorage.setItem('Shop_Name', shop); 
+      localStorage.setItem('Shop_Token', res.access_token); 
       // order create webhook block
-
       const webhook_url = "https://"+shop+"/admin/api/2021-07/webhooks.json";
       const get_webhook = {
         method: "GET",
@@ -76,6 +84,7 @@ exports.getToken = (req, response) => {
           request(webhook_data, (error, response) => {
             if (error) throw new Error(error);
             var api_respond = response.body;
+            console.log(api_respond);
           });
         }else{
           return false;
@@ -153,7 +162,9 @@ exports.getToken = (req, response) => {
   });
 };
 
-exports.createOrder = (req, res, next) => {  
+exports.createOrder = (req, res, next) => {
+  console.log(localStorage.getItem('Shop_Token'));
+  console.log(localStorage.getItem('Shop_Name'));
   ShopifyOrders.CreateSubscibedOrders()
   .then(response => {
     if(response!=''){

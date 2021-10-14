@@ -1,14 +1,8 @@
 const request = require("request-promise");
-const file = require("fs");
 const dotenv = require('dotenv');
 dotenv.config();
 
-const HOST_NAME = process.env.HOST;
-
-const ShopifyAPIHelper = require('../handlers/apiHelper');
-
 module.exports = class ShopifyAssetHelper {
-
   getShopvariable(shop_name, access_token){
     return {
       shop : shop_name,
@@ -31,17 +25,20 @@ module.exports = class ShopifyAssetHelper {
     });
   }
 
-  getThemeIDHelpers(api_respond, access_token, shop_name) {
-    var theme_data = JSON.parse(api_respond).themes;
-    theme_data.forEach((theme) => {
-      if (theme.role === "main") {
-        const theme_id = theme.id;
-        this.snippetInjectionBlock(theme_id, access_token, shop_name);
-      }
-    });
-  }
+  
+}
 
-  snippetInjectionBlock(theme_id, access_token, shop_name) {
+/*getThemeIDHelpers(api_respond, access_token, shop_name) {
+  var theme_data = JSON.parse(api_respond).themes;
+  theme_data.forEach((theme) => {
+    if (theme.role === "main") {
+      const theme_id = theme.id;
+      this.snippetInjectionBlock(theme_id, access_token, shop_name);
+    }
+  });
+}*/
+
+  /*snippetInjectionBlock(theme_id, access_token, shop_name) {
     const url ="https://" +shop_name +"/admin/api/2021-04/themes/" +theme_id +"/assets.json";
     const html = `<div class="ced_subscription--widget">
                     <label for="1week" class="ced_subscription_option">
@@ -163,7 +160,7 @@ module.exports = class ShopifyAssetHelper {
                 request(update_asset, (error, response) => {
                   if (error) throw new Error(error);
                   else{
-                    // order create webhook block
+                    //order create webhook block
                     const webhook_url = "https://"+shop_name+"/admin/api/2021-07/webhooks.json";
                     const webhook_data = {
                       method: "POST",
@@ -193,5 +190,5 @@ module.exports = class ShopifyAssetHelper {
         });
       }
     });
-  }
-};
+  }*/
+
