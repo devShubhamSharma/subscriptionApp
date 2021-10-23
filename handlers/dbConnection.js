@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+var mysql = require('mysql');
 
 module.exports = class DBConnection{
 constructor(){
@@ -8,7 +8,6 @@ constructor(){
         password: '',
         database: 'SubscriptionClient'
       });
-
       return connection;
 }
 }

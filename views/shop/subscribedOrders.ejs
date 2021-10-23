@@ -22,11 +22,13 @@
               <th scope="col">Items</th>
               <th scope="col">Next Date</th>
               <th scope="col">Subscription Status</th>
+              <th scope="col">Cancel Subscription</th>
             </tr>
           </thead>
         
           <tbody class="text-secondary" data-next="<%=OrderData[Object.keys(OrderData)[Object.keys(OrderData).length - 1]].id%>">
             <% for (let item of OrderData){ %>
+              <% if (item.OrderNumber) { %>
               <tr>
                 <td><%= item.OrderNumber %></td>
                 <td><%= item.Date %></td>
@@ -36,7 +38,9 @@
                 <td><%= item.Items %></td>
                 <td><%= item.NextDate %></td>
                 <td><span class="badge badge-success"><%= item.Status %></span></td>
+                <td><a href="=#">Cancel</a></td>
               </tr>
+              <% } %>
             <% } %>
 
           </tbody>

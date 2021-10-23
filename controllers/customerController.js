@@ -9,6 +9,7 @@ exports.cancel = (req,res,next)=>{
         "Access-Control-Allow-Methods": "*",
     });
     var sql = 'UPDATE order_details SET subscription_status = 1 where order_id='+req.params.id;
+    console.log(sql);
     var response;
     connection.query(sql, (err, rows) => {
         if (err) {

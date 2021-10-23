@@ -22,7 +22,7 @@ exports.subscribedOrders = (req, res, next) => {
             throw err;
         } else {
             if(rows.length != 0){
-            rows.forEach((item) =>{
+            rows.forEach((item,index) =>{
             var weekDays;        
             switch(item.selling_plan){
                 case '7':
@@ -43,23 +43,28 @@ exports.subscribedOrders = (req, res, next) => {
                 let order_date = temp_date.toString().split("GMT")[0];
                 let temp_next_date = new Date(item.next_order_date);
                 let next_date = temp_next_date.toString().split("GMT")[0];
-                orderArr.push({
-                    "id" : item.id,
-                    "OrderNumber": item.order_number, 
-                    "Date": order_date,
-                    "Customer": item.customer_fullname,
-                    "Total": item.total_price,
-                    "SellingPlan": weekDays,
-                    "Items": item.quantity,
-                    "NextDate" : next_date,
-                    "Status": subscription_status,
-                });
+                //const arr_length = orderArr.length;\
+                    orderArr.push({
+                        "id" : item.id,
+                        "OrderNumber": item.order_number, 
+                        "Date": order_date,
+                        "Customer": item.customer_fullname,
+                        "Total": item.total_price,
+                        "SellingPlan": weekDays,
+                        "Items": item.quantity,
+                        "NextDate" : next_date,
+                        "Status": subscription_status
+                    });
             });
             pageCount = Math.ceil((totalCount[0].id_count)/limit);
         }else{
             orderArr = "No Subscription Found";
         }
+        orderArr.forEach(item => {
+            console.log(item);
+        });
             //var arr_length = orderArr.length;
+
         }
         res.render('shop/subscribedOrders',{
             OrderData : orderArr,
