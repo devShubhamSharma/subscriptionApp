@@ -8,16 +8,17 @@ exports.subscribedOrders = (req, res, next) => {
     var orderArr = [];
     var pageCount;
     var totalCount = 0;
-    const selectQuery = 'SELECT COUNT(id) AS id_count FROM order_details';
-    const sql = 'SELECT * FROM `order_details` WHERE `id` >'+ nextSkip + ' LIMIT '+ limit;
-    connection.query(selectQuery, (err, rows) => {
-        if (err) {
-            throw err;
-        } else {
-            totalCount = rows;
-        }
-    });
-    connection.query(sql, (err, rows) => {
+    const distinctQuery = "SELECT DISTINCT order_number,total_price,customer_fullname,selling_plan,order_created,next_order_date,subscription_status FROM order_details";
+    //const selectQuery = 'SELECT COUNT(id) AS id_count FROM order_details';
+    //const sql = 'SELECT * FROM `order_details` WHERE `id` >'+ nextSkip + ' LIMIT '+ limit;
+    // connection.query(selectQuery, (err, rows) => {
+    //     if (err) {
+    //         throw err;
+    //     } else {
+    //         totalCount = rows;
+    //     }
+    // });
+    connection.query(distinctQuery, (err, rows) => {
         if (err) {
             throw err;
         } else {
@@ -38,40 +39,43 @@ exports.subscribedOrders = (req, res, next) => {
                     weekDays = "4 Week";
                     break;
             }
-                var subscription_status = (item.subscription_status == 1) ? 'Active' : 'Inactive';
-                let temp_date = new Date(item.order_created);
-                let order_date = temp_date.toString().split("GMT")[0];
-                let temp_next_date = new Date(item.next_order_date);
-                let next_date = temp_next_date.toString().split("GMT")[0];
+            var subscription_status = item.subscription_status == 1 ? "Active" : "Inactive";
+            var cancel_btn = item.subscription_status == 1 ? "Cancel" : "Canceled";
+            let temp_date = new Date(item.order_created);
+            let order_date = temp_date.toString().split("GMT")[0];
+            let temp_next_date = new Date(item.next_order_date);
+            let next_date = temp_next_date.toString().split("GMT")[0];
                 //const arr_length = orderArr.length;\
-                    orderArr.push({
-                        "id" : item.id,
-                        "OrderNumber": item.order_number, 
-                        "Date": order_date,
-                        "Customer": item.customer_fullname,
-                        "Total": item.total_price,
-                        "SellingPlan": weekDays,
-                        "Items": item.quantity,
-                        "NextDate" : next_date,
-                        "Status": subscription_status
-                    });
+                orderArr.push({
+                    id: item.id,
+                    OrderNumber: item.order_number,
+                    Date: order_date,
+                    Total: item.total_price,
+                    Customer: item.customer_fullname,
+                    SellingPlan: weekDays,
+                    NextDate: next_date,
+                    Status: subscription_status,
+                    cancel:  cancel_btn
+                  });
             });
-            pageCount = Math.ceil((totalCount[0].id_count)/limit);
+            //pageCount = Math.ceil((totalCount[0].id_count)/limit);
         }else{
             orderArr = "No Subscription Found";
         }
-        orderArr.forEach(item => {
-            console.log(item);
-        });
+        //console.log(orderArr);
             //var arr_length = orderArr.length;
-
         }
         res.render('shop/subscribedOrders',{
-            OrderData : orderArr,
-            pageCount:pageCount
+            OrderData : orderArr
+           // pageCount:pageCount
             
         });
     });
+};
+
+exports.viewOrders = (req,res) => {
+    console.log(res.query);
+    return res.send('{"success"}');
 };
 
 

@@ -15,34 +15,28 @@
           <thead class="thead">
             <tr>
               <th scope="col">Order</th>
-              <th scope="col">Date</th>
               <th scope="col">Customer</th>
-              <th scope="col">Total</th>
               <th scope="col">Selling Plan</th>
-              <th scope="col">Items</th>
+              <th scope="col">Date</th>
               <th scope="col">Next Date</th>
+              <th scope="col">Total</th>
               <th scope="col">Subscription Status</th>
               <th scope="col">Cancel Subscription</th>
             </tr>
           </thead>
-        
           <tbody class="text-secondary" data-next="<%=OrderData[Object.keys(OrderData)[Object.keys(OrderData).length - 1]].id%>">
             <% for (let item of OrderData){ %>
-              <% if (item.OrderNumber) { %>
-              <tr>
-                <td><%= item.OrderNumber %></td>
-                <td><%= item.Date %></td>
-                <td><%= item.Customer %></td>
-                <td><%= item.Total %></td>
-                <td><%= item.SellingPlan %></td>
-                <td><%= item.Items %></td>
-                <td><%= item.NextDate %></td>
-                <td><span class="badge badge-success"><%= item.Status %></span></td>
-                <td><a href="=#">Cancel</a></td>
-              </tr>
-              <% } %>
+                <tr class="view_orders">
+                  <td class="ShopifyOrderId"><%= item.OrderNumber %></td>
+                  <td><%= item.Customer %></td>
+                  <td><%= item.SellingPlan %></td>
+                  <td><%= item.Date %></td>
+                  <td><%= item.NextDate %></td>
+                  <td><%= item.Total %></td>
+                  <td><span class="badge badge-success"><%= item.Status %></span></td> 
+                  <td><button class="btn btn-danger"><%= item.cancel %></button></td> 
+                </tr>
             <% } %>
-
           </tbody>
         </table>
         
@@ -62,22 +56,80 @@
       <% } %>   
     </div>
   </div>
+
+  <div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    $(".next-pagination").on("click", function(){
-    var limit = $("tbody").data('next');
-    
-    $.ajax({
-        type: 'GET',
-        url: '/subscribed/orders?nextdata='+limit,
-        success: function(response) {
-            var parser = new DOMParser();
-            var body_html = response;
-          	var doc = parser.parseFromString(body_html, 'text/html');
-            var table_body = doc.querySelector('tbody');
-            $("tbody").replaceWith(table_body);
-        }
+    $(".btn-danger").on("click", function(){
+      var order_id = $(this).closest('tr').children('td:first').text().replace("#","");
+      $('.modal').show();
+      $(".modal-title").text("Cancel Subscription Order");
+      $(".modal-body").html(`<p>Are you sure to cancel the subscription order ? </p>`);
+      $(".modal-footer").html(`<button type="button" class="btn btn-danger cancel-subscription">Cancel</button>`);
+      
+      $(".cancel-subscription").on("click", function(){
+        $.ajax({
+          type: 'GET',
+          url: '/cancel/orders?id='+order_id,
+          success: function(response) {
+              var parser = new DOMParser();
+              var body_html = JSON.stringify(response);
+              if(response === 'success'){
+                $(".modal-body").html(`<p>Your subscription orders canceled? </p>`);
+              }
+          }
+        });
     });
-  });
+    });
+
+    // $(".view_orders").on("click", function(){
+    //   var order_id = $(this).closest('tr').children('td:first').text().replace("#","");
+    //   $.ajax({
+    //     type: 'POST',
+    //     url: '/view/orders',
+    //     body : JSON.stringify({
+    //         order_number: order_id,
+    //     }),
+    //     success: function(response) {
+    //         var parser = new DOMParser();
+    //         var body_html = JSON.stringify(response);
+    //         console.log(response);
+    //     }
+    //   });
+    //   //$('#myModal').show();
+    // });
+
+    $(".close").on("click", function(){
+      $('.modal').hide();
+    });
+  //   $(".next-pagination").on("click", function(){
+  //   var limit = $("tbody").data('next');
+    
+  //   $.ajax({
+  //       type: 'GET',
+  //       url: '/subscribed/orders?nextdata='+limit,
+  //       success: function(response) {
+  //           var parser = new DOMParser();
+  //           var body_html = response;
+  //         	var doc = parser.parseFromString(body_html, 'text/html');
+  //           var table_body = doc.querySelector('tbody');
+  //           $("tbody").replaceWith(table_body);
+  //       }
+  //   });
+  // });
 
   // $(".prev-pagination").on("click", function(){
   //   var limit = $("tbody").data('prev');
@@ -95,5 +147,6 @@
   //   });
   // });
   </script>
+
 </main>
 <%- include('../includes/end.ejs') %>

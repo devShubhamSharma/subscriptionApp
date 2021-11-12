@@ -1,0 +1,21 @@
+<%- include('../includes/head.ejs') %>
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="modal-body">
+                  <%= message%>
+                </div>
+              </div>
+            </div>
+          </div>
+      </main> 
+      <script>
+          $('#myModal').modal('show');
+      </script>
+
+<%- include('../includes/end.ejs') %>

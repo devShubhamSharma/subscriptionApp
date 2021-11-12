@@ -2,10 +2,8 @@ const dotenv = require("dotenv");
 const nonce = require("nonce")();
 const request = require("request-promise");
 var express = require('express');
-const localStorage = require('localStorage');
 
 var app = express();
-
 const DBConnection = require("../handlers/dbConnection");
 const connection = new DBConnection();
 
@@ -28,12 +26,15 @@ exports.appInstall = (req, res) => {
     const install_url = "https://" + shop_name + "/admin/oauth/authorize?client_id=" + API_KEY + "&scope=" + SCOPES + "&redirect_uri=" + HOST_NAME + "/site/callback" + "&state=" + shopState;
     res.redirect(install_url);
   }else {
-     console.log("Something went wrong");
+     res.render('shop/modal',{
+        message: "something went wrong"
+     });
   }
 };
+/*controller action for install the app on the client store*/
 
 /* function for getting shop token*/
-exports.getToken = (req, response) => {
+exports.getToken = (req, respond) => {
   const { shop, code } = req.query;
   const accessTokenRequestUrl = "https://" + shop + "/admin/oauth/access_token";
   const accessTokenPayload = {
@@ -46,17 +47,16 @@ exports.getToken = (req, response) => {
   clientHelper
   .getToken(accessTokenRequestUrl, accessTokenPayload)
   .then((res) => {
-
     clientHelper.saveToken(res.access_token, shop);
     if (res.access_token) {
-      // saving shop_access_token and shop_name in the local storage
-      localStorage.setItem('Shop_Name', shop); 
-      localStorage.setItem('Shop_Token', res.access_token); 
       // order create webhook block
-      const webhook_url = "https://"+shop+"/admin/api/2021-07/webhooks.json";
+      const getWebhook_url = `https://${shop}/admin/api/2021-10/webhooks.json`;
+      const postWebhook_url = `${HOST_NAME}/admin/api/2021-10/webhooks.json`;
+      console.log(getWebhook_url);
+      console.log(postWebhook_url);
       const get_webhook = {
         method: "GET",
-        url: webhook_url,
+        url: getWebhook_url,
         headers: {
           "X-Shopify-Access-Token": res.access_token,
           "Content-Type": "application/json",
@@ -65,10 +65,11 @@ exports.getToken = (req, response) => {
       request(get_webhook, (error, response) => {
         if (error) throw new Error(error);
         var api_respond = JSON.parse(response.body);
+        console.log(api_respond);
         if(api_respond.webhooks==''){
           const webhook_data = {
             method: "POST",
-            url: webhook_url,
+            url: getWebhook_url,
             headers: {
               "X-Shopify-Access-Token": res.access_token,
               "Content-Type": "application/json",
@@ -76,7 +77,7 @@ exports.getToken = (req, response) => {
             body: JSON.stringify({
               "webhook": {
                 "topic": "orders/create",
-                "address": HOST_NAME+"/orders/webhook",
+                "address": HOST_NAME,
                 "format": "json"
               }
             })
@@ -84,7 +85,7 @@ exports.getToken = (req, response) => {
           request(webhook_data, (error, response) => {
             if (error) throw new Error(error);
             var api_respond = response.body;
-            console.log(api_respond);
+            console.log(api_respond)
           });
         }else{
           return false;
@@ -92,24 +93,22 @@ exports.getToken = (req, response) => {
       });
       
       const nextSkip = typeof req.query.nextdata == "undefined" ? 0 : req.query.nextdata;
-      const limit = 4;
+      const limit = 8;
       var orderArr = [];
+      var arr_temp = [];
       var pageCount;
       var totalCount = 0;
-      const selectQuery = "SELECT COUNT(id) AS id_count FROM order_details";
-      const sql =
-      "SELECT * FROM `order_details` WHERE `id` >" +
-      nextSkip +
-      " LIMIT " +
-      limit;
-      connection.query(selectQuery, (err, rows) => {
-        if (err) {
-          throw err;
-        } else {
-          totalCount = rows;
-        }
-      });
-      connection.query(sql, (err, rows) => {
+      //const selectQuery = "SELECT COUNT(id) AS id_count FROM order_details";
+      const sql = "SELECT * FROM `order_details`";
+      const distinctQuery = "SELECT DISTINCT order_number,total_price,customer_fullname,selling_plan,order_created,next_order_date,subscription_status FROM order_details";
+      // connection.query(selectQuery, (err, rows) => {
+      //   if (err) {
+      //     throw err;
+      //   } else {
+      //     totalCount = rows;
+      //   }
+      // });
+      connection.query(distinctQuery, (err, rows) => {
         if (err) {
           throw err;
         } else {
@@ -130,8 +129,8 @@ exports.getToken = (req, response) => {
                 weekDays = "4 Week";
                 break;
               }
-              var subscription_status =
-              item.subscription_status == 1 ? "Active" : "Inactive";
+              var subscription_status = item.subscription_status == 1 ? "Active" : "Inactive";
+              var cancel_btn = item.subscription_status == 1 ? "Cancel" : "Canceled";
               let temp_date = new Date(item.order_created);
               let order_date = temp_date.toString().split("GMT")[0];
               let temp_next_date = new Date(item.next_order_date);
@@ -140,31 +139,55 @@ exports.getToken = (req, response) => {
                 id: item.id,
                 OrderNumber: item.order_number,
                 Date: order_date,
-                Customer: item.customer_fullname,
                 Total: item.total_price,
+                Customer: item.customer_fullname,
                 SellingPlan: weekDays,
-                Items: item.quantity,
                 NextDate: next_date,
                 Status: subscription_status,
+                cancel:  cancel_btn
               });
             });
-            pageCount = Math.ceil(totalCount[0].id_count / limit);
+            //pageCount = Math.ceil(totalCount[0].id_count / limit);
           } else {
             orderArr = "No Subscription Found";
           }
         }
-        response.render("shop/subscribedOrders", {
+      //   orderArr.forEach((item, index) => {
+      //     if (!arr_temp[item.OrderNumber]) {
+      //         arr_temp[item.OrderNumber] = {};
+      //         arr_temp[item.OrderNumber]["customer"] = {
+      //             name: item.Customer,
+      //         };
+      //         arr_temp[item.OrderNumber]["line_items"] = [];
+      //         arr_temp[item.OrderNumber]["line_items"].push({
+      //             selling_plan : item.SellingPlan,
+      //             date: item.Date,
+      //             nextDate:  item.NextDate,
+      //             quantity: item.Items,
+      //             status : item.Status
+      //         });
+      //     } 
+      //     else {
+      //         arr_temp[item.OrderNumber]["line_items"].push({
+      //           selling_plan : item.SellingPlan,
+      //           date: item.Date,
+      //           nextDate:  item.NextDate,
+      //           quantity: item.Items,
+      //           status : item.Status
+      //         });
+      //     }
+      // });
+        respond.render("shop/subscribedOrders", {
           OrderData: orderArr,
-          pageCount: pageCount,
+          pageCount: pageCount
         });
       });
     }
   });
 };
 
+/* function for getting shop token*/
 exports.createOrder = (req, res, next) => {
-  console.log(localStorage.getItem('Shop_Token'));
-  console.log(localStorage.getItem('Shop_Name'));
   ShopifyOrders.CreateSubscibedOrders()
   .then(response => {
     if(response!=''){

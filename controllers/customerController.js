@@ -21,6 +21,23 @@ exports.cancel = (req,res,next)=>{
     });
 }
 
+exports.orderCancel = (req,res,next)=>{
+    res.set({
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+    });
+    var sql = 'UPDATE order_details SET subscription_status = 0 where order_number='+`"#${req.query.id}"`;
+    var response;
+    connection.query(sql, (err, rows) => {
+        if (err) {
+            response = "failed"
+        } else {
+            response = "success"
+        }
+        return res.json(response);
+    });
+}
+
 exports.createOrder = (req,res,next)=>{
     var date = new Date();
     var dateFormat = date.getFullYear()+'-'+ (date.getMonth() + 1) +'-'+date.getDate();

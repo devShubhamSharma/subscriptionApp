@@ -50,9 +50,9 @@ function prepareUpdateQuery(update_query,arr_temp){
         }
         var asset_credentials = {
         method: "POST",
-        url: localStorage.getItem('Shop_Name'),
+        url: "https://laurens-fam.myshopify.com/admin/api/2021-10/orders.json",
         headers: {
-            "X-Shopify-Access-Token": localStorage.getItem('Shop_Token'),
+            "X-Shopify-Access-Token": "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",
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -87,9 +87,8 @@ var createOrders = function() {
             }
             else {
             result.forEach((item, index) => {
-                if (!arr_temp[item.order_number]) {
+                if (!arr_temp[item.order_number]){
                     var updateQuery = prepareNextOrderDate(item);
-    
                     arr_temp[item.order_number] = {};
                     arr_temp[item.order_number]["customer"] = {
                         id: item.customer_id,
@@ -105,7 +104,7 @@ var createOrders = function() {
                     var updateQuery = prepareNextOrderDate(item);
                     arr_temp[item.order_number]["line_items"].push({
                         variant_id: item.variant_id,
-                        quantity: item.quantity,
+                        quantity: item.quantity
                     });
                     response = prepareUpdateQuery(updateQuery,arr_temp);
                 }
@@ -114,7 +113,8 @@ var createOrders = function() {
             }
         });
     });
-} 
+}
+
 module.exports = {
     CreateSubscibedOrders : createOrders
 }

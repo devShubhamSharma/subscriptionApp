@@ -85,7 +85,7 @@ module.exports = class ShopifyWebhookHelper {
             });
             });
         });
-        console.log(order_array);
+        //console.log(order_array);
         this.prepareCustomerArray(webhook_response);
         this.insertOrderData(order_array);
     }
