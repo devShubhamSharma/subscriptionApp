@@ -8,6 +8,7 @@ exports.webhookResponse = async (req, res, next) => {
     const webhookHelper = new ShopifyWebHookHelper();
    
     try{
+
         webhookHelper.getWebhookResponse(jsonObj);
         return res.end('{"success"}');
     }catch (err) {

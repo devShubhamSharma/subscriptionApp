@@ -77,7 +77,7 @@ exports.getToken = (req, respond) => {
             body: JSON.stringify({
               "webhook": {
                 "topic": "orders/create",
-                "address": HOST_NAME,
+                "address": HOST_NAME+"/orders/webhook",
                 "format": "json"
               }
             })
@@ -190,7 +190,7 @@ exports.getToken = (req, respond) => {
 exports.createOrder = (req, res, next) => {
   ShopifyOrders.CreateSubscibedOrders()
   .then(response => {
-    if(response!=''){
+    if(response == true){
       res.send("Order successfully created");
     }else{
       res.send("Something went wrong");

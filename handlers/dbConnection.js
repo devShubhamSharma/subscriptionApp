@@ -4,8 +4,8 @@ constructor(){
     const connection = mysql.createConnection({
         host: "localhost",
         user: "root",
-        password: 'cedcom@2021$',
-        database: 'SubscriptionClient'
+        password: '',
+        database: 'Subscription_Client'
       });
       return connection;
 }
